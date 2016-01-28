@@ -14,13 +14,13 @@ function dataLoaded(err,rows){
     var layout = d3.layout.histogram() //layout function transform format a to format b
     .value(function(d){return d.startTime;})
     .range([new Date(2011,6,15), new Date(2013,6,13)])
-    .bins(d3.range(new Date(2011,6,15), new Date(2013,6,16), 24*3600*1000) )
+    .bins(d3.range(new Date(2011,6,15), new Date(2013,6,16), 24*3600*1000) );
 
     var timeSeries = layout(rows);
     console.log(timeSeries);
 
     //scales
-    var scaleX = d3.scale.linear().domain([new Date(2011,6,15), new Date(2013,6,13)]).range([0,w])
+    var scaleX = d3.scale.linear().domain([new Date(2011,6,15), new Date(2013,6,13)]).range([0,w]),
         scaleY = d3.scale.linear().domain([0, d3.max(timeSeries, function(d){ return d.y;})]).range([h,0]);
 
     //generator
@@ -29,10 +29,25 @@ function dataLoaded(err,rows){
                         .y(function(d){ return scaleY(d.y)})
                         .interpolate('basis');
 
+    var axisX = d3.svg.axis() //return a function
+                .scale(scaleX) 
+                .orient('bottom')
+                .ticks(d3.time.weeks);
     //append and modify the DOM element
     plot.append('path')
         .datum(timeSeries)
         .attr('d', lineGenerator);
+
+    plot.append('g')
+        .attr('class','axis axis-x')
+        .attr('transform','translate(0,'+h+')')
+        .call(axisX);
+
+    plot
+        .call(appendRedBall);
+    function appendRedBall(element){ 
+        element.append('circle').style('fill','red').attr('r','5');
+    }
 }
 
 function parse(d){

@@ -11,6 +11,28 @@ var plot = d3.select('.plot').append('svg')
 d3.csv('../data/hubway_trips.csv',parse,dataLoaded);
 
 function dataLoaded(err,rows){
+    var layout = d3.layout.histogram() //layout function transform format a to format b
+    .value(function(d){return d.startTime;})
+    .range([new Date(2011,6,15), new Date(2013,6,13)])
+    .bins(d3.range(new Date(2011,6,15), new Date(2013,6,16), 24*3600*1000) )
+
+    var timeSeries = layout(rows);
+    console.log(timeSeries);
+
+    //scales
+    var scaleX = d3.scale.linear().domain([new Date(2011,6,15), new Date(2013,6,13)]).range([0,w])
+        scaleY = d3.scale.linear().domain([0, d3.max(timeSeries, function(d){ return d.y;})]).range([h,0]);
+
+    //generator
+    var lineGenerator = d3.svg.line()
+                        .x(function(d){ return scaleX(d.x + d.dx/2)})
+                        .y(function(d){ return scaleY(d.y)})
+                        .interpolate('basis');
+
+    //append and modify the DOM element
+    plot.append('path')
+        .datum(timeSeries)
+        .attr('d', lineGenerator);
 }
 
 function parse(d){

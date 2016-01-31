@@ -28,6 +28,10 @@ var greenBarChart = simpleBar() //actually a function
 .color('green')
 .padding(3);
 
+var redBarChart = simpleBar() //actually a function
+.color('red')
+.padding(3);
+
 d3.select('#plot-1').datum(values).call(greenBarChart);
 
 

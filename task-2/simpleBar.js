@@ -42,7 +42,7 @@ function simpleBar(){
 				return scaleY(d);
 			})
 			.attr('width',barW)
-			attr('height', function(d){
+			.attr('height', function(d){
 				return h-scaleY(d);
 			})
 			.style("fill", color);
@@ -57,9 +57,9 @@ function simpleBar(){
 		color = c;
 		return this;
 	}
-	draw.padding = function(padding){ //p
+	draw.padding = function(p){ //p
 		//padding is a number
-		padding = padding;
+		padding = p;
 		return this; // this is the same as draw
 
 	}
